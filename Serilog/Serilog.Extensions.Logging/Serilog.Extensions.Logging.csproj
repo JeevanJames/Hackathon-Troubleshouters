@@ -7,7 +7,7 @@
     <Authors>Microsoft;Serilog Contributors</Authors>
     <!-- These must match the Dependencies tab in https://www.nuget.org/packages/microsoft.extensions.logging at
          the target version. -->
-    <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>serilog;Microsoft.Extensions.Logging</PackageTags>
     <PackageIcon>serilog-extension-nuget.png</PackageIcon>

@@ -7,13 +7,9 @@
     <Authors>Microsoft;Serilog Contributors</Authors>
     <!-- These must match the Dependencies tab in https://www.nuget.org/packages/microsoft.extensions.hosting at
          the target version. -->
-    <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
-    <LangVersion>8</LangVersion>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyOriginatorKeyFile>../../assets/Serilog.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageTags>serilog;aspnet;aspnetcore;hosting</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/serilog/serilog-extensions-hosting</PackageProjectUrl>
@@ -36,9 +32,12 @@
 
   <ItemGroup>
     <!-- The versions of all references in this group must match the major and minor components of the package version prefix. -->
-    <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Serilog.Extensions.Logging\Serilog.Extensions.Logging.csproj" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
     <!-- This must match the major and minor components of the referenced *.Extensions.* packages (and highest supported .NET TFM). -->
     <VersionPrefix>7.0.1</VersionPrefix>
     <Authors>Microsoft;Serilog Contributors</Authors>
-    <TargetFrameworks>net462;netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net7.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>serilog;aspnet;aspnetcore</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
@@ -32,12 +32,9 @@
 
   <ItemGroup>
     <!-- The versions of all references in this group must match the major and minor components of the package version prefix. -->
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-    <!-- Temporary addition to pull in trace/span support -->
-    <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.1-*" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'net462' and '$(TargetFramework)' != 'netstandard2.0' and '$(TargetFramework)' != 'netstandard2.1' ">
@@ -48,6 +45,11 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Serilog.Extensions.Hosting\Serilog.Extensions.Hosting.csproj" />
+    <ProjectReference Include="..\Serilog.Extensions.Logging\Serilog.Extensions.Logging.csproj" />
   </ItemGroup>
 
 </Project>
