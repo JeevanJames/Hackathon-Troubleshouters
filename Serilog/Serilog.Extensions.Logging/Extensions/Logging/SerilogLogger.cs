@@ -8,6 +8,7 @@ using FrameworkLogger = Microsoft.Extensions.Logging.ILogger;
 using System.Reflection;
 using Serilog.Debugging;
 using System.Collections.Concurrent;
+using CustomLogging;
 
 namespace Serilog.Extensions.Logging;
 
@@ -26,6 +27,7 @@ class SerilogLogger : FrameworkLogger
     }
 
     readonly SerilogLoggerProvider _provider;
+    private readonly string _name;
     readonly ILogger _logger;
 
     static readonly CachingMessageTemplateParser MessageTemplateParser = new();
@@ -41,6 +43,7 @@ class SerilogLogger : FrameworkLogger
         string? name = null)
     {
         _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        _name = name;
 
         // If a logger was passed, the provider has already added itself as an enricher
         _logger = logger ?? Serilog.Log.Logger.ForContext(new[] { provider });
@@ -67,12 +70,18 @@ class SerilogLogger : FrameworkLogger
         {
             return;
         }
-        var level = LevelConvert.ToSerilogLevel(logLevel);
-        if (!_logger.IsEnabled(level))
-        {
-            return;
-        }
+        //var level = LevelConvert.ToSerilogLevel(logLevel);
 
+        LogLevel configuredLevel = CustomLog.Levels.FindLogLevelFor(_name);
+        if (logLevel < configuredLevel)
+            return;
+
+        //if (!_logger.IsEnabled(level))
+        //{
+        //    return;
+        //}
+
+        var level = LevelConvert.ToSerilogLevel(logLevel);
         LogEvent? evt = null;
         try
         {

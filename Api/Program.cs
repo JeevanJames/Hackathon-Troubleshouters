@@ -1,4 +1,9 @@
+using CustomLogging;
 using Serilog;
+
+CustomLog.Levels.AddRange(LogLevel.Information,
+    "Serilog", "Microsoft", "System.Diagnostics", "Microsoft.AspNetCore", "Jeevan", "System",
+    "Serilog", "Microsoft", "System.Diagnostics", "Microsoft.AspNetCore", "Jeevan", "System");
 
 var builder = WebApplication.CreateBuilder(args);
 
