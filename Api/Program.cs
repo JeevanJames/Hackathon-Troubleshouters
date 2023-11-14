@@ -1,17 +1,24 @@
+using System.Text.Json.Serialization;
 using CustomLogging;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
-CustomLog.Levels.AddRange(LogLevel.Information,
+DynamicLogs.Instance.AddCustomLogLevels(LogLevel.Information,
     "Serilog", "Microsoft", "System.Diagnostics", "Microsoft.AspNetCore", "Jeevan", "System",
     "Serilog", "Microsoft", "System.Diagnostics", "Microsoft.AspNetCore", "Jeevan", "System");
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console());
+builder.Host.UseSerilog((ctx, lc) => lc
+    .MinimumLevel.Verbose()
+    .WriteTo.Console(
+        theme: AnsiConsoleTheme.Code,
+        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}"));
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

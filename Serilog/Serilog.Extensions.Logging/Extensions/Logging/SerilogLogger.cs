@@ -56,7 +56,11 @@ class SerilogLogger : FrameworkLogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return logLevel != LogLevel.None && _logger.IsEnabled(LevelConvert.ToSerilogLevel(logLevel));
+        //return logLevel != LogLevel.None && _logger.IsEnabled(LevelConvert.ToSerilogLevel(logLevel));
+
+        DynamicLogs.Instance.AddSourceContext(_name);
+        LogLevel configuredLevel = DynamicLogs.Instance.FindLogLevelFor(_name);
+        return logLevel >= configuredLevel;
     }
 
     public IDisposable BeginScope<TState>(TState state) where TState : notnull
@@ -72,8 +76,7 @@ class SerilogLogger : FrameworkLogger
         }
         //var level = LevelConvert.ToSerilogLevel(logLevel);
 
-        LogLevel configuredLevel = CustomLog.Levels.FindLogLevelFor(_name);
-        if (logLevel < configuredLevel)
+        if (!IsEnabled(logLevel))
             return;
 
         //if (!_logger.IsEnabled(level))
