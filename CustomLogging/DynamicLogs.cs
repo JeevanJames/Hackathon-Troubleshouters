@@ -128,7 +128,7 @@ public sealed class DynamicLogCollection
     private readonly SourceContextCollection _sourceContexts = new();
     private readonly ReaderWriterLockSlim _sourceContextsLock = new();
 
-    public LogLevel DefaultLevel { get; set; } = LogLevel.Debug;
+    public LogLevel DefaultLevel { get; set; } = LogLevel.Information;
 
     public void AddCustomLogLevel(string sourceContext, LogLevel level)
     {

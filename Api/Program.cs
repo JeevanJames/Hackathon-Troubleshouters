@@ -1,15 +1,22 @@
 using System.Text.Json.Serialization;
+using Api;
 using CustomLogging;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
-DynamicLogs.Instance.AddCustomLogLevels(LogLevel.Information,
-    "Serilog", "Microsoft", "System.Diagnostics", "Microsoft.AspNetCore", "Jeevan", "System",
-    "Serilog", "Microsoft", "System.Diagnostics", "Microsoft.AspNetCore", "Jeevan", "System");
-
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((ctx, lc) => lc
+// Set Dynamic Logs defaults
+IConfigurationSection dynamicLogsSection = builder.Configuration.GetSection("DynamicLogs");
+ConfigModel config = dynamicLogsSection.Get<ConfigModel>() ?? new ConfigModel();
+DynamicLogs.Instance.DefaultLevel = config.DefaultLevel;
+if (config.CustomLevels is not null)
+{
+    foreach ((LogLevel level, string[] sourceContexts) in config.CustomLevels)
+        DynamicLogs.Instance.AddCustomLogLevels(level, sourceContexts);
+}
+
+builder.Host.UseSerilog((_, lc) => lc
     .MinimumLevel.Verbose()
     .WriteTo.Console(
         theme: AnsiConsoleTheme.Code,
