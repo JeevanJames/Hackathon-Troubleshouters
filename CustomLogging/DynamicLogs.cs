@@ -16,6 +16,8 @@ public sealed class DynamicLogs
 
     public LogLevel DefaultLevel { get; set; } = LogLevel.Information;
 
+    public bool OnlyCustomSourceContexts { get; set; }
+
     public void AddCustomLogLevel(string sourceContext, LogLevel level)
     {
         _customLogLevelsLock.EnterWriteLock();
@@ -85,9 +87,12 @@ public sealed class DynamicLogs
         _customLogLevelsLock.EnterReadLock();
         try
         {
-            return _customLogLevels.TryFindClosestMatch(sourceContext, out LogLevel logLevel)
-                ? logLevel
-                : DefaultLevel;
+            if (_customLogLevels.Count == 0)
+                return DefaultLevel;
+
+            if (_customLogLevels.TryFindClosestMatch(sourceContext, out LogLevel logLevel))
+                return logLevel;
+            return OnlyCustomSourceContexts ? LogLevel.None : DefaultLevel;
         }
         finally
         {

@@ -14,15 +14,17 @@ public class LogController : ControllerBase
         return Ok(new GetCustomLogLevelsResponse
         {
             DefaultLevel = DynamicLogs.Instance.DefaultLevel,
+            OnlyUseCustomLevels = DynamicLogs.Instance.OnlyCustomSourceContexts,
             SourceContexts = DynamicLogs.Instance.GetCustomLogLevels(),
         });
     }
 
-    [HttpPost("levels/default/{level}")]
+    [HttpPost("levels/settings")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult SetDefaultLogLevel(LogLevel level)
+    public ActionResult SetCustomLogSettings([FromBody] SetCustomLogSettingsRequest request)
     {
-        DynamicLogs.Instance.DefaultLevel = level;
+        DynamicLogs.Instance.DefaultLevel = request.DefaultLevel;
+        DynamicLogs.Instance.OnlyCustomSourceContexts = request.OnlyUseCustomLevels;
         return NoContent();
     }
 
@@ -56,9 +58,13 @@ public sealed class GetCustomLogLevelsResponse
 {
     public LogLevel DefaultLevel { get; init; }
 
+    public bool OnlyUseCustomLevels { get; init; }
+
     public required IDictionary<string, LogLevel> SourceContexts { get; init; }
 }
 
 public sealed class SetCustomLogLevelsRequest : Dictionary<LogLevel, string[]>
 {
 }
+
+public sealed record SetCustomLogSettingsRequest(LogLevel DefaultLevel, bool OnlyUseCustomLevels);
