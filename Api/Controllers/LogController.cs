@@ -37,9 +37,9 @@ public class LogController : ControllerBase
 
     [HttpPost("levels/reset")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult ResetCustomLogLevels()
+    public ActionResult ResetCustomLogLevels([FromBody] string[] sourceContexts)
     {
-        DynamicLogs.Instance.ResetCustomLogLevels();
+        DynamicLogs.Instance.ResetCustomLogLevels(sourceContexts);
         Console.Clear();
         return NoContent();
     }
