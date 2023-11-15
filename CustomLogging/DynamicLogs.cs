@@ -4,11 +4,6 @@ using Microsoft.Extensions.Logging;
 
 namespace CustomLogging;
 
-public static class DynamicLogs
-{
-    public static readonly DynamicLogCollection Instance = new();
-}
-
 public readonly record struct CustomLogLevel(string SourceContext, LogLevel Level);
 
 public sealed class CustomLogLevelCollection : Collection<CustomLogLevel>
@@ -125,8 +120,10 @@ public sealed class SourceContextCollection : Collection<string>
     }
 }
 
-public sealed class DynamicLogCollection
+public sealed class DynamicLogs
 {
+    public static readonly DynamicLogs Instance = new();
+
     private readonly CustomLogLevelCollection _customLogLevels = new();
     private readonly ReaderWriterLockSlim _customLogLevelsLock = new();
 
