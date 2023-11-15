@@ -1,10 +1,13 @@
 using System.Text.Json.Serialization;
+
 using Api;
+
 using CustomLogging;
+
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Set Dynamic Logs defaults
 IConfigurationSection dynamicLogsSection = builder.Configuration.GetSection("DynamicLogs");
@@ -20,7 +23,9 @@ builder.Host.UseSerilog((_, lc) => lc
     .MinimumLevel.Verbose()
     .WriteTo.Console(
         theme: AnsiConsoleTheme.Code,
-        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}"));
+        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}")
+    .WriteTo.File("./Logs/log.txt", rollingInterval: RollingInterval.Hour,
+        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}"));
 
 // Add services to the container.
 
@@ -30,13 +35,13 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(o => o.EnableTryItOutByDefault());
 }
 
 app.UseHttpsRedirection();

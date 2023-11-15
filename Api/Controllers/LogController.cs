@@ -40,6 +40,7 @@ public class LogController : ControllerBase
     public ActionResult ResetCustomLogLevels()
     {
         DynamicLogs.Instance.ResetCustomLogLevels();
+        Console.Clear();
         return NoContent();
     }
 

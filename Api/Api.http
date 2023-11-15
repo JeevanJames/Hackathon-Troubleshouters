@@ -1,0 +1,5 @@
+﻿@Api_HostAddress = https://localhost:7194
+
+GET {{Api_HostAddress}}/logs/levels
+
+###

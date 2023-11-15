@@ -44,36 +44,41 @@ public sealed class CustomLogLevelCollection : Collection<CustomLogLevel>
 
     protected override void InsertItem(int index, CustomLogLevel item)
     {
-        int insertionIndex = FindInsertionIndex(item);
-        if (insertionIndex >= 0)
-            base.InsertItem(insertionIndex, item);
+        int insertionIndex = FindInsertionIndex(item, out bool itemExists);
+        if (itemExists)
+            RemoveItem(insertionIndex);
+        base.InsertItem(insertionIndex, item);
     }
 
     protected override void SetItem(int index, CustomLogLevel item)
     {
-        int insertionIndex = FindInsertionIndex(item);
-        if (insertionIndex < 0)
-            return;
+        //int insertionIndex = FindInsertionIndex(item);
+        //if (insertionIndex < 0)
+        //    return;
 
-        // Remove the item at the specified index
-        RemoveItem(index);
+        //// Remove the item at the specified index
+        //RemoveItem(index);
 
-        // Insert the modified item at the correct position
-        base.InsertItem(insertionIndex, item);
+        //// Insert the modified item at the correct position
+        //base.InsertItem(insertionIndex, item);
+
+        throw new NotSupportedException();
     }
 
-    private int FindInsertionIndex(CustomLogLevel item)
+    private int FindInsertionIndex(CustomLogLevel item, out bool isExistingItem)
     {
         for (int i = 0; i < Count; i++)
         {
             int comparison = string.Compare(this[i].SourceContext, item.SourceContext,
                 StringComparison.OrdinalIgnoreCase);
-            if (comparison == 0)
-                return -1;
-            if (comparison > 0)
+            if (comparison >= 0)
+            {
+                isExistingItem = comparison == 0;
                 return i;
+            }
         }
 
+        isExistingItem = false;
         return Count;
     }
 }
