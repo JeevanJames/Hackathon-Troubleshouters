@@ -9,41 +9,38 @@ public class LogController : ControllerBase
 {
     [HttpGet("levels")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult<GetCustomLogLevelsResponse> GetCustomLogLevels()
+    public ActionResult<CustomLogLevelDetailsResponse> GetCustomLogLevels()
     {
-        return Ok(new GetCustomLogLevelsResponse
-        {
-            DefaultLevel = DynamicLogs.Instance.DefaultLevel,
-            OnlyUseCustomLevels = DynamicLogs.Instance.OnlyCustomSourceContexts,
-            SourceContexts = DynamicLogs.Instance.GetCustomLogLevels(),
-        });
+        return Ok(GetCustomLogLevelDetails());
     }
 
     [HttpPost("levels/settings")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult SetCustomLogSettings([FromBody] SetCustomLogSettingsRequest request)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<CustomLogLevelDetailsResponse> SetCustomLogSettings(
+        [FromBody] SetCustomLogSettingsRequest request)
     {
         DynamicLogs.Instance.DefaultLevel = request.DefaultLevel;
         DynamicLogs.Instance.OnlyCustomSourceContexts = request.OnlyUseCustomLevels;
-        return NoContent();
+        return Ok(GetCustomLogLevelDetails());
     }
 
     [HttpPost("levels")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult SetCustomLogLevels([FromBody] SetCustomLogLevelsRequest request)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<CustomLogLevelDetailsResponse> SetCustomLogLevels(
+        [FromBody] SetCustomLogLevelsRequest request)
     {
         foreach ((LogLevel level, string[] sourceContexts) in request)
             DynamicLogs.Instance.AddCustomLogLevels(level, sourceContexts);
-        return NoContent();
+        return Ok(GetCustomLogLevelDetails());
     }
 
     [HttpPost("levels/reset")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public ActionResult ResetCustomLogLevels([FromBody] string[] sourceContexts)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<CustomLogLevelDetailsResponse> ResetCustomLogLevels(
+        [FromBody] string[] sourceContexts)
     {
         DynamicLogs.Instance.ResetCustomLogLevels(sourceContexts);
-        Console.Clear();
-        return NoContent();
+        return Ok(GetCustomLogLevelDetails());
     }
 
     [HttpGet("source-contexts")]
@@ -52,9 +49,16 @@ public class LogController : ControllerBase
     {
         return Ok(DynamicLogs.Instance.GetSourceContexts());
     }
+
+    private static CustomLogLevelDetailsResponse GetCustomLogLevelDetails() => new()
+    {
+        DefaultLevel = DynamicLogs.Instance.DefaultLevel,
+        OnlyUseCustomLevels = DynamicLogs.Instance.OnlyCustomSourceContexts,
+        SourceContexts = DynamicLogs.Instance.GetCustomLogLevels(),
+    };
 }
 
-public sealed class GetCustomLogLevelsResponse
+public sealed class CustomLogLevelDetailsResponse
 {
     public LogLevel DefaultLevel { get; init; }
 
